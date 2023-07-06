@@ -34,9 +34,12 @@ function parsePrintingPage(pages) {
     });
     
     ret = unique(ret).sort((a, b) => a - b);
-    ret.map(elem => {
-        if (elem < 1) { throw new Error('The argument includes invalid page number.'); }
-    });
+
+    // 1未満の値が含まれる場合は例外をスローする。
+    // 既に昇順に並び替えているので、先頭の値が1未満であれば、それ以降の値も1未満である。
+    if (ret[0] < 1) {
+        throw new Error('The argument includes invalid page number.'); 
+    }
     return ret;
 }
 
