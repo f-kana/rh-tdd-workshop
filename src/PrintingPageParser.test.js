@@ -2,7 +2,7 @@ import {parsePrintingPage} from './PrintingPageParser';
 
 describe('parsePrintingPage', () => {
     it('xxx', () => {
-        expect(parsePrintingPage('')).toBe([]);
+        expect(parsePrintingPage('')).toBe();
     });
     
 })

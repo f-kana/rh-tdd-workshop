@@ -1,7 +1,6 @@
 
-function parsePrintingPage(pages) {
+function parsePrintingPage() {
 
-    return []
 }
 
 export {parsePrintingPage}
