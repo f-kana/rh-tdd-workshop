@@ -1,9 +1,10 @@
-import {pointCalculator} from './PointCalculator';
+import {parsePrintingPage} from './PrintingPageParser';
 
-describe('pointCalculator', () => {
+describe('parsePrintingPage', () => {
     it('xxx', () => {
-        expect(true).toBe(true);
+        expect(parsePrintingPage('')).toBe([]);
     });
+    
 })
 
 
