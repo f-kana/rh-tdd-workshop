@@ -4,9 +4,9 @@
 3. 引数がハイフン繋ぎの数値である場合、FromからToまでの数値を展開したリストを返す。但し、From＞Toの場合はエラー。
 4. 引数がカンマ区切りである場合、カンマで区切られた各要素のFromからToまでの数値を展開したリストを返す。
 5. 数値リストは昇順（１ -> 100）でソートされている。
-6. 但し、重複は一意化する。
+6. 重複は一意化する。
 7. 引数が未指定の場合、例外をスローする。
-8. 引数が数値またはハイフンまたはカンマでない場合、例外をスローする。
+8. 引数が数値, ハイフン, カンマ, 空白文字でない場合、例外をスローする。
 9. 数値に1未満の値が含まれる場合、例外をスローする。
 10. “--”や",,"などは例外をスローする
 11. -nは1ページ目からnページまでのリストを返す。
@@ -16,19 +16,20 @@
 */
 
 function parsePrintingPage(pages) {
-    if (pages === undefined || pages === '') {
+    if (pages === undefined) {
         throw new Error('The argument is empty.');
     }
     if (doesIncludeInvalidChar(pages)) {
         throw new Error('The argument includes invalid char.');
     }
 
+    // Remove spaces
+    pages = pages.replace(/ +/g, '')
+
+    let comma_parsed_list = splitCommaSeparatedCharIntoList(pages);
     let ret = []
-    pages.split(',').forEach(csv_elem => {
-        if (csv_elem === '') {
-            throw new Error('The argument is empty.');
-        }
-        parsePrintingPageListElement(csv_elem).forEach(page_num => {
+    comma_parsed_list.forEach(elem => {
+        parseHyphenSeparatedPages(elem).forEach(page_num => {
             ret.push(page_num);
         });
     });
@@ -43,7 +44,21 @@ function parsePrintingPage(pages) {
     return ret;
 }
 
-function parsePrintingPageListElement(pages) {
+/// カンマ区切りの文字列をリストに分割する
+/// 空要素があれば例外をスローする
+function splitCommaSeparatedCharIntoList(csv) {
+    let list = csv.split(',');
+    list.forEach(elem => {
+        if (elem === '') {
+            throw new Error('The argument is empty.');
+        }
+    });
+    return list;
+}
+
+/// ハイフンを含む文字列を数値のリストに変換する。引数pagesにカンマは含まれない想定。
+/// 単体の数値の場合はその数値を格納した長さ１のリストを返す。
+function parseHyphenSeparatedPages(pages) {
     if (pages.includes('-')) {
         const from_and_to = pages.split('-').map(elem => parseInt(elem));
         if (from_and_to.length !== 2) {
@@ -65,8 +80,7 @@ function parsePrintingPageListElement(pages) {
 
 // 引数のリストを一意化する
 function unique(list) {
-    const set = new Set(list);
-    return Array.from(set);
+    return Array.from(new Set(list));
 }
 
 // 引数の文字列pagesが(半角数字 or マイナス記号 or カンマ or 半角スペース)以外の文字を含んでいる場合trueを返す
@@ -78,7 +92,7 @@ function doesIncludeInvalidChar(pages) {
 
 export {
     parsePrintingPage,
-    parsePrintingPageListElement,
+    parseHyphenSeparatedPages,
     unique,
     doesIncludeInvalidChar
 }

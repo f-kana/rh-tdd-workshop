@@ -1,25 +1,25 @@
 import {
     parsePrintingPage,
-    parsePrintingPageListElement,
+    parseHyphenSeparatedPages,
     unique,
     doesIncludeInvalidChar,
 } from './PrintingPageParser';
 
 describe('parsePrintingPage', () => {
     it('2. 引数が単独の数値のみである場合、その数値を格納したリストを返す。', () => {
-        expect(parsePrintingPageListElement('1')).toStrictEqual([1]);
-        expect(parsePrintingPageListElement('123')).toStrictEqual([123]);
-        expect(parsePrintingPageListElement('  123   ')).toStrictEqual([123]);
+        expect(parseHyphenSeparatedPages('1')).toStrictEqual([1]);
+        expect(parseHyphenSeparatedPages('123')).toStrictEqual([123]);
+        expect(parseHyphenSeparatedPages('  123   ')).toStrictEqual([123]);
     });
 
     it('3. 引数がハイフン繋ぎの数値である場合、FromからToまでの数値を展開したリストを返す。但し、From＞Toの場合はエラー。', () => {
-        expect(parsePrintingPageListElement('1-3')).toStrictEqual([1, 2, 3]);
-        expect(parsePrintingPageListElement('102-105')).toStrictEqual([102, 103, 104, 105]);
+        expect(parseHyphenSeparatedPages('1-3')).toStrictEqual([1, 2, 3]);
+        expect(parseHyphenSeparatedPages('102-105')).toStrictEqual([102, 103, 104, 105]);
 
-        expect(() => parsePrintingPageListElement('5-4')).toThrowError();
+        expect(() => parseHyphenSeparatedPages('5-4')).toThrowError();
     });
 
-    it('4. 引数がカンマ区切りである場合、カンマで区切られた各要素のFromからToまでの数値を展開したリストを返す。但し、重複は一意化する。', () => {
+    it('4. 引数がカンマ区切りである場合、カンマで区切られた各要素のFromからToまでの数値を展開したリストを返す。', () => {
         expect(parsePrintingPage('1, 3')).toStrictEqual([1, 3]);
         expect(parsePrintingPage('1, 3-5')).toStrictEqual([1, 3, 4, 5]);
         expect(parsePrintingPage('10, 1-3')).toStrictEqual([1, 2, 3, 10]);
@@ -38,10 +38,17 @@ describe('parsePrintingPage', () => {
         expect(() =>parsePrintingPage('')).toThrow();
     });
 
-    it('8. 引数が数値またはハイフンまたはカンマでない場合、例外をスローする。', () => {
+    it('8. 引数が数値, ハイフン, カンマ, 空白文字でない場合、例外をスローする。', () => {
         expect(doesIncludeInvalidChar('1, 2-3')).toBeFalsy();
-        expect(doesIncludeInvalidChar('1,,,,,----')).toBeFalsy();
 
+        //（最終的な仕様上はNGだが）無効な文字の有無を判定するメソッドはPassさせる
+        expect(doesIncludeInvalidChar(',,')).toBeFalsy();
+        expect(doesIncludeInvalidChar(', , ')).toBeFalsy();
+        expect(doesIncludeInvalidChar('-')).toBeFalsy();
+        expect(doesIncludeInvalidChar('--')).toBeFalsy();
+        expect(doesIncludeInvalidChar('-  -')).toBeFalsy();
+
+        // NG
         expect(doesIncludeInvalidChar('abc')).toBeTruthy();
         expect(doesIncludeInvalidChar('+')).toBeTruthy();
         expect(doesIncludeInvalidChar('あいうえお')).toBeTruthy();
@@ -57,6 +64,8 @@ describe('parsePrintingPage', () => {
         expect(() => parsePrintingPage(',,')).toThrow();
         expect(() => parsePrintingPage('-')).toThrow();
         expect(() => parsePrintingPage('--')).toThrow();
+        expect(() => parsePrintingPage(' - ')).toThrow();
+        expect(() => parsePrintingPage(',  ')).toThrow();
         expect(() => parsePrintingPage('2--4')).toThrow();
         expect(() => parsePrintingPage('2-4-6')).toThrow();
         //expect(() => parsePrintingPage('-6')).toThrow();
