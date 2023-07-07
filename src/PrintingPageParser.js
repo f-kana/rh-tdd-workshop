@@ -1,0 +1,6 @@
+
+function pointCalculator() {
+  
+}
+
+export {pointCalculator}
