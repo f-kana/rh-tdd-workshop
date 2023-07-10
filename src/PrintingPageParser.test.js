@@ -3,6 +3,7 @@ import {
     parseHyphenSeparatedPages,
     unique,
     doesIncludeInvalidChar,
+    removeSpaces,
 } from './PrintingPageParser';
 
 describe('parsePrintingPage', () => {
@@ -12,11 +13,13 @@ describe('parsePrintingPage', () => {
         expect(parseHyphenSeparatedPages('  123   ')).toStrictEqual([123]);
     });
 
-    it('3. 引数がハイフン繋ぎの数値である場合、FromからToまでの数値を展開したリストを返す。但し、From＞Toの場合はエラー。', () => {
+    it('3. 引数がハイフン繋ぎの数値である場合、FromからToまでの数値を展開したリストを返す。但し、From＞Toの場合はエラー、From=Toの場合は通常処理。', () => {
         expect(parseHyphenSeparatedPages('1-3')).toStrictEqual([1, 2, 3]);
         expect(parseHyphenSeparatedPages('102-105')).toStrictEqual([102, 103, 104, 105]);
 
         expect(() => parseHyphenSeparatedPages('5-4')).toThrowError();
+
+        expect(parseHyphenSeparatedPages('3-3')).toStrictEqual([3]);
     });
 
     it('4. 引数がカンマ区切りである場合、カンマで区切られた各要素のFromからToまでの数値を展開したリストを返す。', () => {
@@ -31,6 +34,7 @@ describe('parsePrintingPage', () => {
 
     it('6. 重複は一意化する。', () => {
         expect(unique([1,1])).toStrictEqual([1]);
+        expect(unique([5, 7, 5, 7])).toStrictEqual([5, 7]);
     });
 
     it('7. 引数が未指定の場合、例外をスローする。', () => {
@@ -72,7 +76,14 @@ describe('parsePrintingPage', () => {
         expect(() => parsePrintingPage('6-')).toThrow();
     });``
 
-    it('11. -nは1ページ目からnページまでのリストを返す。', () => {
+    it('11. スペースは無視するのが基本だが、"1 2"を"12"とは解釈せず、例外をスローする。', () => {
+        expect(parsePrintingPage(' 1, 2 ')).toStrictEqual([1, 2]);
+        expect(parsePrintingPage(' 1 - 2 ')).toStrictEqual([1, 2]);
+
+        expect(() => parsePrintingPage('1 2')).toThrow();
+    });
+
+    it('12. -nは1ページ目からnページまでのリストを返す。', () => {
         expect(parsePrintingPage('-3')).toStrictEqual([1, 2, 3]);
     });
     
