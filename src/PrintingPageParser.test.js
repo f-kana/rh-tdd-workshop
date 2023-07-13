@@ -58,9 +58,13 @@ describe('parsePrintingPage', () => {
         expect(doesIncludeInvalidChar('あいうえお')).toBeTruthy();
     });
 
-    it('9. 数値に1未満の値が含まれる場合、例外をスローする。', () => {
+    it('9. 数値に1未満の値や非整数が含まれる場合、例外をスローする。', () => {
         expect(() => parsePrintingPage('0')).toThrow();
         expect(() => parsePrintingPage('0.1')).toThrow();
+        expect(() => parsePrintingPage('1.1')).toThrow();
+        expect(() => parsePrintingPage('0.1-0.9')).toThrow();
+        expect(() => parsePrintingPage('0.1-2.1')).toThrow();
+        expect(() => parsePrintingPage('0.1,2.1')).toThrow();
         //expect(() => parsePrintingPage('-1')).toThrow();
     });
 
