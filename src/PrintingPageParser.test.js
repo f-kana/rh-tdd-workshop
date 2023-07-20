@@ -2,7 +2,7 @@ import {
     parsePrintingPage,
     parseHyphenSeparatedPages,
     unique,
-    doesIncludeInvalidChar,
+    validateIncludeInvalidChar,
     removeSpaces,
 } from './PrintingPageParser';
 
@@ -43,19 +43,19 @@ describe('parsePrintingPage', () => {
     });
 
     it('8. 引数が数値, ハイフン, カンマ, 空白文字でない場合、例外をスローする。', () => {
-        expect(doesIncludeInvalidChar('1, 2-3')).toBeFalsy();
+        expect(validateIncludeInvalidChar('1, 2-3')).toBeUndefined();
 
-        //（最終的な仕様上はNGだが）無効な文字の有無を判定するメソッドはPassさせる
-        expect(doesIncludeInvalidChar(',,')).toBeFalsy();
-        expect(doesIncludeInvalidChar(', , ')).toBeFalsy();
-        expect(doesIncludeInvalidChar('-')).toBeFalsy();
-        expect(doesIncludeInvalidChar('--')).toBeFalsy();
-        expect(doesIncludeInvalidChar('-  -')).toBeFalsy();
+        //（最終的な仕様上はNGだが、）このメソッドは無効な文字の有無を判定するだけなので下記はPass
+        expect(validateIncludeInvalidChar(',,')).toBeUndefined();
+        expect(validateIncludeInvalidChar(', , ')).toBeUndefined();
+        expect(validateIncludeInvalidChar('-')).toBeUndefined();
+        expect(validateIncludeInvalidChar('--')).toBeUndefined();
+        expect(validateIncludeInvalidChar('-  -')).toBeUndefined();
 
         // NG
-        expect(doesIncludeInvalidChar('abc')).toBeTruthy();
-        expect(doesIncludeInvalidChar('+')).toBeTruthy();
-        expect(doesIncludeInvalidChar('あいうえお')).toBeTruthy();
+        expect(() => validateIncludeInvalidChar('abc')).toThrow();
+        expect(() => validateIncludeInvalidChar('+')).toThrow();
+        expect(() => validateIncludeInvalidChar('あいうえお')).toThrow();
     });
 
     it('9. 数値に1未満の値や非整数が含まれる場合、例外をスローする。', () => {
@@ -69,6 +69,8 @@ describe('parsePrintingPage', () => {
     });
 
     it('10. “--”や",,"などは例外をスローする', () => {
+        expect(() => parsePrintingPage(' ')).toThrow();
+        expect(() => parsePrintingPage(',')).toThrow();
         expect(() => parsePrintingPage(',,')).toThrow();
         expect(() => parsePrintingPage('-')).toThrow();
         expect(() => parsePrintingPage('--')).toThrow();

@@ -24,9 +24,7 @@ function parsePrintingPage(pages) {
     if (pages === undefined) {
         throw new Error('The argument is empty.');
     }
-    if (doesIncludeInvalidChar(pages)) {
-        throw new Error('The argument includes invalid char.');
-    }
+    validateIncludeInvalidChar(pages);
 
     // Remove spaces
     pages = removeSpaces(pages);
@@ -77,7 +75,7 @@ function parseHyphenSeparatedPages(pages) {
             throw new Error('from > to');
         }
         const length = to - from + 1;
-        return [...Array(length).keys()].map((_, i) => i + from);
+        return [...Array(length).keys()].map(i => i + from);
     } else {
         return [parseInt(pages)]
     }
@@ -89,12 +87,15 @@ function unique(list) {
 }
 
 // 引数の文字列pagesが(半角数字 or マイナス記号 or カンマ or 半角スペース)以外の文字を含んでいる場合trueを返す
-function doesIncludeInvalidChar(pages) {
+function validateIncludeInvalidChar(pages) {
     const regex = /[^0-9,\- ]/;
-    return regex.test(pages);
+    if (regex.test(pages)) {
+        throw new Error('The argument is empty.');
+    }
 }
 
-// 引数の文字列pagesからスペースを除去する。但し、数値を空白で区切った書式は例外をスローする（例："1 2"を"12"とは解釈しない）
+/// 引数の文字列pagesからスペースを除去する。
+/// 但し、数値を空白で区切った書式は例外をスローする（例："1 2"を"12"とは解釈しない）
 function removeSpaces(pages) {
     const regex = /[0-9] +[0-9]/;
     if (regex.test(pages)) {
@@ -108,6 +109,6 @@ export {
     parsePrintingPage,
     parseHyphenSeparatedPages,
     unique,
-    doesIncludeInvalidChar,
+    validateIncludeInvalidChar,
     removeSpaces,
 }
