@@ -2,7 +2,7 @@ import {parsePrintingPage} from './PrintingPageParser';
 
 describe('parsePrintingPage', () => {
     it('xxx', () => {
-        expect(true).toBe(true);
+        expect(true).toStrictEqual(true);
     });
 })
 
