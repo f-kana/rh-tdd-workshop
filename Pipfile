@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+[dev-packages]
+black = "*"
+flake8 = "*"
+
+[requires]
+python_version = "3.9"
+python_full_version = "3.9.17"
+
+[scripts]
+test = "python -m unittest"

@@ -1,5 +1,6 @@
 {
   "configurations": [
+    
     {
       "name": "vscode-jest-tests",
       "type": "node",
@@ -15,6 +16,16 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "port": 9229
+    },
+    {
+      "name": "Python: unittest",
+      "type": "python",
+      "request": "launch",
+      "module": "unittest",
+      "args": ["discover"],
+      "justMyCode": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
