@@ -1,6 +1,0 @@
-
-function pointCalculator() {
-  
-}
-
-export {pointCalculator}

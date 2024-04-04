@@ -1,4 +1,4 @@
-import {parsePrintingPage} from './ParsePrintingPage';
+import {parsePrintingPage} from './PointCalculator';
 
 describe('parsePrintingPage', () => {
     it('xxx', () => {
