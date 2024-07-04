@@ -24,9 +24,8 @@ function parsePrintingPage(pages) {
     if (pages === undefined) {
         throw new Error('The argument is empty.');
     }
-    validateIncludeInvalidChar(pages);
+    validateInvalidChar(pages);
 
-    // Remove spaces
     pages = removeSpaces(pages);
 
     let comma_parsed_list = splitCommaSeparatedCharIntoList(pages);
@@ -87,10 +86,10 @@ function unique(list) {
 }
 
 // 引数の文字列pagesが(半角数字 or マイナス記号 or カンマ or 半角スペース)以外の文字を含んでいる場合trueを返す
-function validateIncludeInvalidChar(pages) {
+function validateInvalidChar(pages) {
     const regex = /[^0-9,\- ]/;
     if (regex.test(pages)) {
-        throw new Error('The argument is empty.');
+        throw new Error('Invalid Char.');
     }
 }
 
@@ -109,6 +108,6 @@ export {
     parsePrintingPage,
     parseHyphenSeparatedPages,
     unique,
-    validateIncludeInvalidChar,
+    validateInvalidChar as validateIncludeInvalidChar,
     removeSpaces,
 }

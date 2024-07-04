@@ -87,6 +87,7 @@ describe('parsePrintingPage', () => {
         expect(parsePrintingPage(' 1 - 2 ')).toStrictEqual([1, 2]);
 
         expect(() => parsePrintingPage('1 2')).toThrow();
+        expect(() => parsePrintingPage('100      102')).toThrow();
     });
 
     it('12. -nは1ページ目からnページまでのリストを返す。', () => {
