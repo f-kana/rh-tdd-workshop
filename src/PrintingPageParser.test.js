@@ -16,7 +16,7 @@ describe('parsePrintingPage', () => {
 
 // Unit Test Demo //////////////////////
 function myThreeTimes(n) {
-  return n * 3;
+  return;
 }
 
 describe('myThreeTimes', () => {
