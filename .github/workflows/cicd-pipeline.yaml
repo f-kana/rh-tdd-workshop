@@ -28,7 +28,7 @@ jobs:
           poetry install
 
       - name: Run Unit Tests
-        run: make python-test
+        run: make python-test-with-coverage
       
       - name: Python Static Analyze
         run: |
@@ -60,15 +60,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [python-ci, nodejs-ci]
+    env:
+      GH_PAGES_URL: "https://f-kana.github.io/rh-tdd-workshop/"
+      DEPLOY_DATETIME: ${{ steps.set-deploy-datetime.outputs.deploy_datetime }}
 
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
 
       - name: Set Deploy DateTime into index.html
+        id: set-deploy-datetime
         run: |
-          DEPLOY_TIME=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')
-          sed -i "s/{{DEPLOY_TIME}}/$DEPLOY_TIME/" src/index.html
+          echo "DEPLOY_DATETIME=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+          sed -i "s/{{DEPLOY_DATETIME}}/$DEPLOY_DATETIME/" src/index.html
 
       - name: Build-Like Process
         run: |
@@ -81,3 +85,22 @@ jobs:
           github_token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
           publish_dir: ./docs  # 生成されたファイルを公開ブランチへ
           publish_branch: gh-pages
+
+      - name: Wait for GitHub Pages to deploy
+        run: sleep 30  # デプロイが反映されるまで待機
+
+      - name: Check if the page is up
+        run: |
+          STATUS_CODE=$(curl -o /dev/null -s -w "%{http_code}\n" $GH_PAGES_URL)
+          if [ $STATUS_CODE -ne 200 ]; then
+            echo "Page is not up. Status code: $STATUS_CODE"
+            exit 1
+          fi
+    
+      - name: Check if deploy datetime is updated
+        run: |
+          PAGE_CONTENT=$(curl -s $GH_PAGES_URL)
+          if [[ $PAGE_CONTENT != *"$DEPLOY_DATETIME"* ]]; then
+            echo "Deploy datetime is not updated."
+            exit 1
+          fi

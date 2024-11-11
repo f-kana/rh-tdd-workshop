@@ -1,11 +1,20 @@
+COVERAGE_THRESHOLD = 95
+
 # Python
 python-test:
 	poetry run python -m unittest
+
+python-test-with-coverage:
+	rm .coverage
+	poetry run coverage run -m unittest
+	poetry run coverage report --fail-under=$(COVERAGE_THRESHOLD)
+    # poetry run coverage html
 
 python-static-analyze:
 	@make flake8
 	@make pylint
 	@make mypy
+	@make bandit
 	@make black-check
 	@make isrot-check
 	# @make safety # comment out because even the latest mod includes a volnerability
@@ -18,6 +27,9 @@ pylint:
 
 mypy:
 	poetry run mypy src
+
+bandit:
+	poetry run bandit -r src
 
 black-check:
 	poetry run black --check src
