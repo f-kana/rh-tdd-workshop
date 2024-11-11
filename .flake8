@@ -1,2 +1,50 @@
 [flake8]
+
+# Ignore:
+# D100 Missing docstring in public module
+# D101 Missing docstring in public class
+# D102 Missing docstring in public method
+# D103 Missing docstring in public function
+# D104 Missing docstring in public package
+# D205 1 blank line required between summary line and description
+# D400 First line should end with a period
+ignore = D100,D101,D102,D103,D104,D205,D400
+
+exclude =
+    */migrations/*,
+    __init__.py
+
 max-line-length = 120
+
+#  C901 too complex
+max-complexity = 10
+
+# W0212 Access to a protected member of a client class
+per-file-ignores =
+    # Test files
+    */tests/*: W0212
+    */test_*.py: W0212
+
+############################################################
+# Plugin: flake8-cognitive-complexity
+
+# CCR001 Cognitive complexity is too high
+max-cognitive-complexity = 10
+
+############################################################
+# Plugin: pep8-naming
+ignore-names =
+    # Default, written in official document
+    setUp,tearDown,setUpClass,tearDownClass,setUpModule,tearDownModule,asyncSetUp,asyncTearDown,setUpTestData,failureException,longMessage,maxDiff,
+
+    # unittest, Django unittest
+    assertEqual,
+    assertIsNotNone,
+    assertRaises,
+    assertRedirects,
+    assertSelectsHasValidName,
+    assertSelectHasValidValue,
+    subTest
+
+    # Custom
+    Cls

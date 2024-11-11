@@ -38,13 +38,13 @@ jobs:
       - name: Run Unit Tests
         run: make python-test
       
-      - name: Python Lint
+      - name: Python Static Analyze
         run: |
-          make python-lint
+          make python-static-analyze
       
-      - name: HTML Lint
+      - name: HTML Static Analyze
         run: |
-          make html-lint
+          make html-static-analyze
 
       - name: Build-Like Process
         run: |
