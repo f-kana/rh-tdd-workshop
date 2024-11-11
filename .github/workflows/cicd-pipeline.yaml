@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.12'
+      
+      - name: Install Utils
+        run: sudo apt-get install -y tree make
 
       - name: Install dependencies
         run: |
@@ -30,6 +33,7 @@ jobs:
       - name: Build-Like Process
         run: |
           mkdir -p docs
+          tree
           cp -r src/* docs/
 
       - name: Deploy to GitHub Pages
