@@ -5,7 +5,7 @@ python-test:
 	poetry run python -m unittest
 
 python-test-with-coverage:
-	rm .coverage
+	rm -rf .coverage
 	poetry run coverage run -m unittest
 	poetry run coverage report --fail-under=$(COVERAGE_THRESHOLD)
     # poetry run coverage html
