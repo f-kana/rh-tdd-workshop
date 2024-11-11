@@ -1,4 +1,5 @@
 from unittest import TestCase
+
 from .printing_page_parser import parse_printing_page
 
 
