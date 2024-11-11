@@ -1,26 +1,31 @@
-TDD Workshop
-----
+# TDD Workshop
+
 詳細は敢えて書きませんのでOwnerに聞いてください。
+
 * Supports Node.js and Python
 
-# Node.js
-- node v12.18.3
-- npm 6.14.13
+## Python
 
-## Commands
-- `npm install && npm run test` to run tests.
-- `NODE_OPTIONS=--experimental-vm-modules npx jest --watch` to run tests on change.
+* python 3.12
+* poetry
 
-# Python
-- Python 3.9
-- pipenv
+### Python Commands
 
-## Setup
-```
+* `pip install poetry && poetry install` to setup the environments.
+
+## Node.js
+
+* node v20.11.1
+* npm 10.8.1
+
+### Node.JS Commands
+
+* `npm install && npm run test` to run tests.
+* `NODE_OPTIONS=--experimental-vm-modules npx jest --watch` to run tests on change.
+
+### Setup
+
+```sh
 pip3 install pipenv
 pipenv install -d
 pipenv shell
-```
-
-### Commands
-- `pipenv run test` (= python -m unittest)

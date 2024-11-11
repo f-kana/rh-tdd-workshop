@@ -16,5 +16,8 @@ flake8-docstrings = "^1.7.0"
 flake8-comprehensions = "^3.16.0"
 mypy = "^1.13.0"
 safety = "^3.2.10"
+black = "^24.10.0"
+isort = "^5.13.2"
+pylint = "^3.3.1"
 
 
