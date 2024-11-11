@@ -97,6 +97,7 @@ jobs:
             echo "Page is not up. Status code: $STATUS_CODE"
             exit 1
           fi
+          echo "Page is up. Status code: $STATUS_CODE"
     
       - name: Check if deploy datetime is updated
         run: |
@@ -105,3 +106,4 @@ jobs:
             echo "Deploy datetime is not updated."
             exit 1
           fi
+          echo "Deploy seems to be successful."
