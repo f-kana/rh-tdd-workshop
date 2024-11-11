@@ -18,5 +18,5 @@ def parse_printing_page(input_page: str) -> list[int]:
         [start, end] = [int(i) for i in input_page.split("-")]
         # return [i for i in range(start, end + 1)]
         return list(range(start, end + 1))
-    else:
-        return [int(i) for i in input_page.split(",")]
+
+    return [int(i) for i in input_page.split(",")]
