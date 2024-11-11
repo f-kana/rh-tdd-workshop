@@ -62,7 +62,6 @@ jobs:
     needs: [python-ci, nodejs-ci]
     env:
       GH_PAGES_URL: "https://f-kana.github.io/rh-tdd-workshop/"
-      DEPLOY_DATETIME: ${{ steps.set-deploy-datetime.outputs.deploy_datetime }}
 
     steps:
       - name: Check out the repository
@@ -71,7 +70,9 @@ jobs:
       - name: Set Deploy DateTime into index.html
         id: set-deploy-datetime
         run: |
-          echo "DEPLOY_DATETIME=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+          DEPLOY_DATETIME=$(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')
+          echo "DEPLOY_DATETIME=$DEPLOY_DATETIME" >> $GITHUB_ENV
+          echo "::set-output name=deploy_datetime::$DEPLOY_DATETIME"
           sed -i "s/{{DEPLOY_DATETIME}}/$DEPLOY_DATETIME/" src/index.html
 
       - name: Build-Like Process
@@ -83,7 +84,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
-          publish_dir: ./docs  # 生成されたファイルを公開ブランチへ
+          publish_dir: ./docs
           publish_branch: gh-pages
 
       - name: Wait for GitHub Pages to deploy
@@ -99,8 +100,8 @@ jobs:
     
       - name: Check if deploy datetime is updated
         run: |
-          PAGE_CONTENT=$(curl -s $GH_PAGES_URL)
-          if [[ $PAGE_CONTENT != *"$DEPLOY_DATETIME"* ]]; then
+          PAGE_CONTENT=$(curl -s ${{ env.GH_PAGES_URL }})
+          if [[ $PAGE_CONTENT != *"${{ steps.set-deploy-datetime.outputs.deploy_datetime }}"* ]]; then
             echo "Deploy datetime is not updated."
             exit 1
           fi
