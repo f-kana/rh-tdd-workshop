@@ -10,3 +10,4 @@ python = "^3.12"
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.1.1"
 
+
