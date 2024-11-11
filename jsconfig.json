@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "checkJs": true,
-    "module": "es2015"
-  },
-  "exclude": ["node_modules"]
-}

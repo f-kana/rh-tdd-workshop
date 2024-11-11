@@ -1,4 +1,0 @@
-{
-  "jest.autoRun": "off",
-  "jest.jestCommandLine": "NODE_OPTIONS=--experimental-vm-modules npx jest"
-}
