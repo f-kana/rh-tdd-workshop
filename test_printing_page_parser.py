@@ -28,6 +28,8 @@ class GeneralTest(TestCase):
             self.assertListEqual(parse_printing_page("1-3"), [1, 2, 3])
         # with self.subTest("3-2. カンマとハイフンの混合"):
         #     self.assertListEqual(parse_printing_page("1-3,4-6"), [1, 2, 3, 4, 5, 6])
+        with self.subTest("5. 重複は一意化する。"):
+            self.assertListEqual(parse_printing_page("1,1,1"), [1])
 
 
 # def my_three_times(n):
