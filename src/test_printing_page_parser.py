@@ -10,6 +10,7 @@ class GeneralTest(TestCase):
         ):
             self.assertListEqual(parse_printing_page("1"), [1])
             self.assertListEqual(parse_printing_page("10"), [10])
+            self.assertListEqual(parse_printing_page("100"), [1000])
         with self.subTest(
             "2. 引数がカンマ区切りの数字の場合、カンマで区切られた各要素の数値を展開したリストを返す。"
         ):
