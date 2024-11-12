@@ -18,7 +18,7 @@ def parse_printing_page(input_page: str) -> list[int]:
         return [1000]
     if input_page.find("-") != -1:  # マイナス記号が含まれているかどうかを判定
         [start, end] = [int(i) for i in input_page.split("-")]
-        # return [i for i in range(start, end + 1)]
-        return list(range(start, end + 1))
+        return [i for i in range(start, end + 1)]
+        # return list(range(start, end + 1))
 
     return [int(i) for i in input_page.split(",")]
