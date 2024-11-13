@@ -39,8 +39,14 @@
     -->
     <script type="text/javascript">
     // タイムスタンプはキャッシュ対策
-    const pyFileName = `printing_page_parser.py?_=${new Date().getTime()}`;
-    const srcScript = await loadTextFile(pyFileName);
+    
+    let srcScript = '';
+    async function _init() {
+        const pyFileName = `printing_page_parser.py?_=${new Date().getTime()}`;
+        srcScript = await loadTextFile(pyFileName);
+    }
+    _init();
+    
 
     function outf(text) {
         var mypre = document.getElementById("output");
