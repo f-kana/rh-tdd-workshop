@@ -1,23 +1,33 @@
-"""
-ToDo:
-1. 引数が単独の正の数(文字列型)のみの場合、その数値(Number型)を格納したリストを返す。
-2. 引数がカンマ区切りの数字の場合、カンマで区切られた各要素の数値を展開したリストを返す。
-3. 引数がハイフン繋ぎの数字の場合、FromからToまでの数値を展開したリストを返す。
-4. ゼロ埋めを正常系として処理する。(001 -> 1)
-5. 重複は一意化する。
-6. 数値リストは昇順（1, 2, 3, …, 100）でソートする。
-7. 引数が未指定（無し or 空文字""）の場合、例外をスローする。
-8. 受入可能文字（数値またはハイフンまたはカンマまたは半角スペース「0123456789,- 」)以外の場合、例外をスローする。
-9. ハイフン繋ぎでFrom > To の場合、例外をスローする。（From = Toは単独の数値と同じ扱いとする。）
-10. 受入可能文字だが不正な並び（0/   /1   2/,/,,,,,/-/–--/1-2-3/-10/10-/等）は例外をスローする
-"""
+import re
 
 
 def parse_printing_page(input_page: str) -> list[int]:
-    if input_page == "100":
-        return [1000]
-    if input_page.find("-") != -1:  # マイナス記号が含まれているかどうかを判定
-        [start, end] = [int(i) for i in input_page.split("-")]
-        return list(range(start, end + 1))
+    _check_invalid_characters(input_page)
+    if not input_page:
+        raise ValueError("引数が未指定です。")
 
-    return list({int(i) for i in input_page.split(",")})
+    pages: set[int] = set()
+    for part in input_page.split(","):
+        part = part.strip()
+        if "-" in part:
+            start, end = map(int, part.split("-"))
+            if start > end:
+                raise ValueError("ハイフン繋ぎでFrom > To の場合、例外をスローします。")
+            pages.update(range(start, end + 1))
+        else:
+            pages.add(int(part))
+
+    retval = sorted(pages)
+    if 0 in retval:
+        raise ValueError("0は受け入れられません。")
+    return retval
+
+
+def _check_invalid_characters(input_page: str) -> None:
+    """Raise ValueError if input_page contains invalid characters."""
+    if re.search(r"[^0-9,\- ]", input_page):
+        raise ValueError(
+            "受入可能文字（数値またはハイフンまたはカンマまたは半角スペース「0123456789,- 」）以外が含まれています。"
+        )
+    if re.match(r"^[, -]+$", input_page):
+        raise ValueError("不正な数値や文字の並びです。")
