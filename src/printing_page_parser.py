@@ -9,10 +9,6 @@ def parse_printing_page(input_page: str) -> list[int]:
     pages = set()
     for part in input_page.split(","):
         part = part.strip()
-        if part == "0":
-            raise ValueError("不正な数値や文字の並びです。")
-    for part in input_page.split(","):
-        part = part.strip()
         if "-" in part:
             start, end = part.split("-")
             start, end = int(start), int(end)
@@ -22,7 +18,10 @@ def parse_printing_page(input_page: str) -> list[int]:
         else:
             pages.add(int(part))
 
-    return sorted(pages)
+    retval = sorted(pages)
+    if 0 in retval:
+        raise ValueError("0は受け入れられません。")
+    return retval
 
 
 def _check_invalid_characters(input_page: str):

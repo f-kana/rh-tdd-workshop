@@ -40,6 +40,7 @@
     <script type="text/javascript">
     // タイムスタンプはキャッシュ対策
     const pyFileName = `printing_page_parser.py?_=${new Date().getTime()}`;
+    const srcScript = await loadTextFile(pyFileName);
 
     function outf(text) {
         var mypre = document.getElementById("output");
@@ -52,7 +53,6 @@
     }
     async function run() {
         const inputPage = document.getElementById("input-page");
-        const srcScript = await loadTextFile(pyFileName);
         const mainScript = `\n\nprint(parse_printing_page("${inputPage.value}"))`;
 
         var mypre = document.getElementById("output");
