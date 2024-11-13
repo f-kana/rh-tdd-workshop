@@ -38,7 +38,7 @@ class GeneralTest(TestCase):
             self.assertListEqual(parse_printing_page("1,1"), [1])
             self.assertListEqual(parse_printing_page("5,5,5,4,3,3"), [3, 4, 5])
         with self.subTest(
-            "7. 引数が未指定（無し or 空文字" "）の場合、例外をスローする。"
+            "7. 引数が未指定（無し or 空文字）の場合、例外をスローする。"
         ):
             self.assertRaises(ValueError, parse_printing_page, "")
 
