@@ -8,8 +8,7 @@
     <meta charset="utf-8">
     <title>印刷ダイアログ</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
-    <script src="https://skulpt.org/js/skulpt.min.js" type="text/javascript"></script>
-    <script src="https://skulpt.org/js/skulpt-stdlib.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.22.0/full/pyodide.js"></script>
     <style>
         #output {
             border: solid;
@@ -19,82 +18,6 @@
 </head>
 
 <body>
-    <!--
-    <select id="languageSelector">
-        <option value="javascript">JavaScript</option>
-        <option value="python">Python</option>
-    </select>
-    <script type="text/javascript">
-
-    /// @retval string "javascript" or "python"
-    function getSelectedLanguage() {
-        const selector = document.getElementById("languageSelector");
-        const selectedLanguage = selector.value;
-        return selectedLanguage;
-    }
-
-    // output functions are configurable.  This one just appends some text
-    // to a pre element.
-    </script>
-    -->
-    <script type="text/javascript">
-    // タイムスタンプはキャッシュ対策
-    
-    let srcScript = '';
-    async function _init() {
-        const pyFileName = `printing_page_parser.py?_=${new Date().getTime()}`;
-        srcScript = await loadTextFile(pyFileName);
-    }
-    _init();
-    
-
-    function outf(text) {
-        var mypre = document.getElementById("output");
-        mypre.innerHTML = mypre.innerHTML + text;
-    }
-    function builtinRead(x) {
-        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
-                throw "File not found: '" + x + "'";
-        return Sk.builtinFiles["files"][x];
-    }
-    async function run() {
-        const inputPage = document.getElementById("input-page");
-        const mainScript = `\n\nprint(parse_printing_page("${inputPage.value}"))`;
-
-        var mypre = document.getElementById("output");
-        mypre.innerHTML = '';
-        Sk.pre = "output";
-        Sk.configure({output:outf, read:builtinRead});
-        (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'mycanvas';
-        var myPromise = Sk.misceval.asyncToPromise(function() {
-                return Sk.importMainWithBody("<stdin>", false, srcScript + mainScript, true);
-            }
-        );
-        myPromise.then(function(mod) {
-                console.log('success');
-            },
-            function(err) {
-                var mypre = document.getElementById("output");
-                mypre.innerHTML = 'エラー: ' + err.toString();
-                console.log(err.toString());
-            }
-        );
-    }
-    async function loadTextFile(filename) {
-        try {
-            const response = await fetch(filename);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const srcScript = await response.text();
-            return srcScript;
-        } catch (error) {
-            console.error('Error fetching a file:', error);
-            return '';
-        }
-    }
-    </script>
-
     <h3>Printer Dialog</h3>
     <input type="text" id="input-page" value="" />
 
@@ -102,11 +25,63 @@
     <button type="button" onclick="run()">印刷</button>
     </form>
     <h3>Output</h3>
-    <pre id="output"></pre>
+    <pre id="output" style="border: solid;"></pre>
     <div id="mycanvas"></div>
 
-    <div id="deploy-time">デプロイ日時: {{DEPLOY_DATETIME}}</div>
+    <script type="text/javascript">
+        
+        let pyodide = null;
+        async function _init() {
+            pyodide = await loadPyodide();
+            await pyodide.loadPackage("micropip");
+            const pyFileName = `printing_page_parser.py?_=${new Date().getTime()}`;
+            const srcScript = await loadTextFile(pyFileName);
+            await pyodide.runPythonAsync(srcScript);
+        }
+        _init();
+        
+        async function loadTextFile(filename) {
+            try {
+                const response = await fetch(filename);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const srcScript = await response.text();
+                return srcScript;
+            } catch (error) {
+                console.error('Error fetching a file:', error);
+                return '';
+            }
+        }
+    
+        async function run() {
+            const inputPage = document.getElementById("input-page").value;
+            const mainPyScript = `
+import sys
+from io import StringIO
 
+# 標準出力をキャプチャするための設定
+old_stdout = sys.stdout
+sys.stdout = mystdout = StringIO()
+
+# 関数の実行
+result = parse_printing_page("${inputPage}")
+print(result)
+
+# 標準出力を元に戻す
+sys.stdout = old_stdout
+output = mystdout.getvalue()
+output
+`;
+            try {
+                const result = await pyodide.runPythonAsync(mainPyScript);
+                document.getElementById("output").innerText = result;
+            } catch (err) {
+                var mypre = document.getElementById("output");
+                mypre.innerHTML = 'エラー: ' + err.toString();
+                console.log(err.toString());
+            }
+        }
+    </script>
 </body>
-
 </html>
