@@ -22,6 +22,7 @@
 
         <form>
             <button type="button" onclick="run()">印刷</button>
+            <button type="button" onclick="resetInput()">リセット</button>
         </form>
         <hr />
         <h3>Output</h3>
@@ -84,6 +85,10 @@ output
                 mypre.innerHTML = 'エラー: ' + err.toString();
                 console.log(err.toString());
             }
+        }
+
+        function resetInput() {
+            document.getElementById("input-page").value = "";
         }
     </script>
 </body>

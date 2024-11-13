@@ -80,3 +80,13 @@ form {
     width: 100%;
     box-sizing: border-box;
 }
+
+/* Styles for the reset button */
+button[type="button"]:nth-child(2) {
+    background-color: #f44336;
+    color: white;
+}
+
+button[type="button"]:nth-child(2):hover {
+    background-color: #e53935;
+}
