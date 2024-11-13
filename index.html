@@ -38,6 +38,9 @@
     </script>
     -->
     <script type="text/javascript">
+    // タイムスタンプはキャッシュ対策
+    const pyFileName = `printing_page_parser.py?_=${new Date().getTime()}`;
+
     function outf(text) {
         var mypre = document.getElementById("output");
         mypre.innerHTML = mypre.innerHTML + text;
@@ -49,7 +52,7 @@
     }
     async function run() {
         const inputPage = document.getElementById("input-page");
-        const srcScript = await loadTextFile('printing_page_parser.py');
+        const srcScript = await loadTextFile(pyFileName);
         const mainScript = `\n\nprint(parse_printing_page("${inputPage.value}"))`;
 
         var mypre = document.getElementById("output");
@@ -96,7 +99,7 @@
     <pre id="output"></pre>
     <div id="mycanvas"></div>
 
-    <div id="deploy-time">デプロイ日時: 2024-11-12 11:49:53</div>
+    <div id="deploy-time">デプロイ日時: 2024-11-13 12:06:12</div>
 
 </body>
 
