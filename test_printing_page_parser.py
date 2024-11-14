@@ -43,7 +43,7 @@ class GeneralTest(TestCase):
             self.assertRaises(ValueError, parse_printing_page, "")
 
         with self.subTest(
-            "8. 受入可能文字（数値またはハイフンまたはカンマまたは半角スペース「0123456789,- 」)以外の場合、例外をスローする。"
+            "8. 受入可能文字（数値,ハイフン,カンマ,半角スペース以外の場合、例外をスローする。"
         ):
             self.assertRaises(ValueError, parse_printing_page, "a")
             self.assertRaises(ValueError, parse_printing_page, "1-2, a、１")
