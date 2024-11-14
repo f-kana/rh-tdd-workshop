@@ -8,7 +8,6 @@ on:
 jobs:
   python-ci:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -27,30 +26,32 @@ jobs:
           poetry config virtualenvs.create false
           poetry install
 
-      - name: Run Unit Tests
+      - name: Unit Tests
         run: make python-test-with-coverage
       
-      - name: Run flake8
+      - name: Flake8
         run: make flake8
 
-      - name: Run pylint
+      - name: Pylint
         run: make pylint
 
-      - name: Run mypy
+      - name: Mypy
         run: make mypy
 
-      - name: Run bandit
+      - name: Bandit
         run: make bandit
+      
+      - name: Ruff
+        run: make ruff-extend
 
-      - name: Run black-check
+      - name: Black (Dry Run)
         run: make black-check
 
-      - name: Run isrot-check
+      - name: isrot (Dry Run)
         run: make isrot-check
 
   nodejs-ci:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -67,13 +68,13 @@ jobs:
         run: |
           npm install
 
-      - name: Run htmlhint
+      - name: htmlhint
         run: make htmlhint
 
-      - name: Run markdownlint
+      - name: markdownlint
         run: make markdownlint
 
-      - name: Run npm-audit
+      - name: npm-audit
         run: make npm-audit
 
   deploy:
@@ -81,7 +82,6 @@ jobs:
     needs: [python-ci, nodejs-ci]
     env:
       GH_PAGES_URL: "https://f-kana.github.io/rh-tdd-workshop/"
-
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
