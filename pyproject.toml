@@ -21,5 +21,27 @@ isort = "^5.13.2"
 pylint = "^3.3.1"
 bandit = "^1.7.10"
 coverage = "^7.6.4"
+ruff = "^0.7.3"
 
+
+[tool.ruff]
+# VSCode Ruff Extensionが"onSave"でRuffを実行する用のデフォルトの設定。
+# コマンドライン実行やCI実行用には更に追加のチェックをかけるためMakeコマンドを用意している。
+# コード	説明	主な役割
+# A	pylint	Pylintに対応するルール
+# B	flake8-bugbear	Bugbearによる潜在バグ検出
+# C	mccabe	複雑度のチェック
+# D	pydocstyle	Docstringのスタイルチェック
+# E	pycodestyle（エラー）	PEP 8スタイルチェック（エラー）
+# F	pyflakes	基本的なエラー検出
+# I	isort	インポートの順序チェック
+# N	pep8-naming	命名規則（snake_caseなど）
+# P	pyflakes（未使用変数等）	Pyflakesによる未使用変数の検出  -> ？？
+# Q	pycodestyle（警告）	PEP 8スタイルチェック（警告）
+# S	bandit	セキュリティリスクの検出
+# T	flake8-bugbear（追加の厳密なチェック）	Bugbearの詳細チェック
+# UP	pyupgrade	Python 3対応チェック
+lint.select = ["E", "F", "N"]
+
+line-length = 120
 

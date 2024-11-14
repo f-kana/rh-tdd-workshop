@@ -7,6 +7,7 @@
         "ms-python.debugpy",
         "ms-python.vscode-pylance",
         "ms-vscode.cmake-tools",
-        "ms-vscode.live-server"
+        "ms-vscode.live-server",
+        "charliermarsh.ruff"
     ]
 }

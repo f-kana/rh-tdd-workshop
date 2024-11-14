@@ -1,7 +1,9 @@
 import re
+import sys
 
 
 def parse_printing_page(input_page: str) -> list[int]:
+    _check_args()
     _check_invalid_characters(input_page)
     if not input_page:
         raise ValueError("引数が未指定です。")
@@ -23,11 +25,17 @@ def parse_printing_page(input_page: str) -> list[int]:
     return retval
 
 
+def _check_args() -> None:
+    """Raise ValueError if the number of arguments is invalid."""
+    if len(sys.argv) != 2:
+        raise ValueError("引数の数が不正です。")
+
+
 def _check_invalid_characters(input_page: str) -> None:
     """Raise ValueError if input_page contains invalid characters."""
     if re.search(r"[^0-9,\- ]", input_page):
         raise ValueError(
-            "受入可能文字（数値またはハイフンまたはカンマまたは半角スペース「0123456789,- 」）以外が含まれています。"
+            "受入可能文字（数値,ハイフン,カンマ,半角スペース以外が含まれています。"
         )
     if re.match(r"^[, -]+$", input_page):
         raise ValueError("不正な数値や文字の並びです。")

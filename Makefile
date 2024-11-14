@@ -15,6 +15,7 @@ python-static-analyze:
 	@make pylint
 	@make mypy
 	@make bandit
+	@make ruff-extend
 	@make black-check
 	@make isrot-check
 	# @make safety # comment out because even the latest mod includes a volnerability
@@ -31,6 +32,13 @@ mypy:
 bandit:
 	poetry run bandit -r src
 
+ruff:
+	poetry run ruff check src
+
+ruff-extend:
+	# Run ruff with default + extend-select options
+	poetry run ruff check --extend-select A,B,C,I,N,Q,S,T src
+
 black-check:
 	poetry run black --check src
 
@@ -38,6 +46,7 @@ isrot-check:
 	poetry run isort --check src
 
 safety:
+	# check command is deprected, scan is recommended. But scan needs a complex config thus using check here.
 	poetry run safety check
 
 # Node.JS: HTML, Markdown
