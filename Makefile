@@ -1,5 +1,8 @@
 COVERAGE_THRESHOLD = 95
 
+test:
+	@make python-test
+
 # Python
 python-test:
 	poetry run python -m unittest

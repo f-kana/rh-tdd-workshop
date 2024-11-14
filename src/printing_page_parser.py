@@ -1,9 +1,8 @@
 import re
-import sys
 
 
 def parse_printing_page(input_page: str) -> list[int]:
-    _check_args()
+
     _check_invalid_characters(input_page)
     if not input_page:
         raise ValueError("引数が未指定です。")
@@ -23,12 +22,6 @@ def parse_printing_page(input_page: str) -> list[int]:
     if 0 in retval:
         raise ValueError("0は受け入れられません。")
     return retval
-
-
-def _check_args() -> None:
-    """Raise ValueError if the number of arguments is invalid."""
-    if len(sys.argv) != 2:
-        raise ValueError("引数の数が不正です。")
 
 
 def _check_invalid_characters(input_page: str) -> None:
