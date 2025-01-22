@@ -6,7 +6,8 @@ from .printing_page_parser import parse_printing_page
 class GeneralTest(TestCase):
     def test_parse_printing_page(self):
         with self.subTest("xxx"):
-            self.assertListEqual(parse_printing_page(), None)
+            # self.assertListEqual(parse_printing_page(), None)
+            self.assertEqual(parse_printing_page(), None)
         # with self.subTest("xxx"):
         #     self.assertListEqual(parse_printing_page(None), None)
 
