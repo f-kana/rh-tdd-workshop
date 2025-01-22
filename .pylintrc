@@ -1,2 +1,25 @@
-disable=
-  C0111
+# .pylintrcは要素の列挙での改行不可！！
+[MASTER]
+ignore=migrations,Pipfile,Pipfile.lock
+ignore-patterns=.*\.ini,.*\.yml,.*\.yaml,.*\.md,.*\.properties,.*\.toml,.*\.txt,Pipfile,Pipfile\.lock,Makefile,Dockerfile
+ignore-paths=cicd_tools
+
+[pylint]
+
+
+[TYPECHECK]
+generated-members=django.*,objects,DoesNotExist,pk,save,delete
+
+[FORMAT]
+max-line-length=120  # flake8と合わせる
+
+[MESSAGES CONTROL]
+# C0114: Missing module docstring
+# C0115: Missing class docstring
+# C0116: Missing function or method docstring
+disable=C0114,C0115,C0116
+
+[FILE PATTERNS]
+# テストコードではいくつかの警告を無視する。
+# W0212: Access to a protected member
+# per-file-ignores=test_*.py:W0212  # 書式が違うかも？
