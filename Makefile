@@ -21,7 +21,7 @@ python-static-analyze:
 	@make ruff-extend
 	@make black-check
 	@make isrot-check
-	# @make safety # comment out because even the latest mod includes a volnerability
+	@make safety # Comment out this when latest pip modules includes a volnerability. They cannot be fix by ourselves.
 
 flake8:
 	poetry run flake8
