@@ -1,16 +1,22 @@
-import {parsePrintingPage} from './ParsePrintingPage';
+import {parsePrintingPage} from './PrintingPageParser';
 
 describe('parsePrintingPage', () => {
     it('xxx', () => {
-        expect(true).toBe(true);
+        expect(true).toStrictEqual(true);
     });
+    // it('xxx', () => {
+    //     expect(true).toStrictEqual(true);
+    // });
+    // it('xxx', () => {
+    //     expect(true).toStrictEqual(true);
+    // });
 })
 
 
 
 // Unit Test Demo //////////////////////
 function myThreeTimes(n) {
-  return n * 3;
+  return;
 }
 
 describe('myThreeTimes', () => {

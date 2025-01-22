@@ -1,6 +1,6 @@
 
 function parsePrintingPage() {
-  
+
 }
 
 export {parsePrintingPage}
