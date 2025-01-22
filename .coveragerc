@@ -1,0 +1,33 @@
+[run]
+omit =
+    */tests/*
+    */tests.py
+    */migrations/*
+    */__init__.py
+    .venv/*
+    gift/common/testing_utils.py
+branch = true
+
+[report]
+omit =
+    */tests/*
+    */tests.py
+    */migrations/*
+    */__init__.py
+    .venv/*
+    settings.py
+exclude_lines =
+    pragma: no cover
+    import\s+.*
+    from\s+.*\s+import\s+.*
+    = models\..*Field
+    = models\..*ForeignKey
+    = RequiredForPub.*Field
+    = RequiredForPub.*ForeignKey
+    class\s+Meta:
+
+[html]
+directory = cicd_tools/reports/cov-report-html
+
+[xml]
+output = cicd_tools/reports/cov-report-xml/coverage.xml
