@@ -67,6 +67,9 @@ htmlhint:
 markdownlint:
 	npx markdownlint *.md docs/*.md
 
+markdownlint-fix:
+	npx markdownlint --fix *.md docs/*.md
+
 # NPM
 npm-audit:
 	npm audit
