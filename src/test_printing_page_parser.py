@@ -13,7 +13,7 @@ class GeneralTest(TestCase):
 
 
 def my_three_times(n):
-    return 3 * n
+    return
 
 
 class DemoTest(TestCase):
