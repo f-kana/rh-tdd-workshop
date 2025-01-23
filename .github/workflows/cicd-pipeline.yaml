@@ -47,8 +47,8 @@ jobs:
       - name: Black (Dry Run)
         run: make black-check
 
-      - name: isrot (Dry Run)
-        run: make isrot-check
+      - name: isort (Dry Run)
+        run: make isort-check
 
   nodejs-ci:
     runs-on: ubuntu-latest

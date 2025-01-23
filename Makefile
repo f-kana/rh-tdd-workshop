@@ -45,7 +45,7 @@ ruff-extend:
 black-check:
 	poetry run black --check src
 
-isrot-check:
+isort-check:
 	poetry run isort --check src
 
 safety:
