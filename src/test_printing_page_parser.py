@@ -6,7 +6,7 @@ from .printing_page_parser import parse_printing_page
 class GeneralTest(TestCase):
     def test_parse_printing_page(self):
         with self.subTest(
-            "1. 引数が単独の正の数(文字列型)のみの場合、その数値(Number型)を格納したリストを返す。ただし入力が５桁→エラー"
+            "1. 引数が単独の正の数(文字列型)のみの場合、その数値(Number型)を格納したリストを返す。入力５桁→エラー"
         ):
             self.assertListEqual(parse_printing_page("1"), [1])
             self.assertListEqual(parse_printing_page("3"), [3])
