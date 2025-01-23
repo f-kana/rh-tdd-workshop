@@ -1,0 +1,119 @@
+name: AI Pull Request Review (by Code Rabbit)
+# https://zenn.dev/minedia/articles/7928ef7545b393
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]  # syncronize = ブランチの更新
+    # branches-ignore:
+    #   - master
+    #   - main
+  pull_request_review_comment:
+    types: [created]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.event.number || github.head_ref || github.sha }}-${{ github.workflow }}-${{ github.event_name == 'pull_request_review_comment' && 'pr_comment' || 'pr' }}
+  cancel-in-progress: ${{ github.event_name != 'pull_request_review_comment' }}
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'issue_comment' && contains(github.event.comment.body, '[run review]') && github.event.issue.pull_request) || (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '[run review]')) || (github.event_name == 'pull_request' && !contains(github.event.pull_request.title, 'release') && !contains(github.event.pull_request.title, 'Release'))
+    timeout-minutes: 15
+    steps:
+      - uses: f-kana/fk-ai-pr-reviewer@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          debug: false
+          review_simple_changes: false
+          review_comment_lgtm: false
+          openai_light_model: gpt-4o # 好みで変更
+          openai_heavy_model: gpt-4o # 好みで変更
+          openai_timeout_ms: 900000 # 15分.
+          language: ja-JP
+          disable_release_notes: true
+          path_filters: |
+            !migrations/**
+            !**/*.lock
+          system_message: |  # djlintも適用しているが、例外設定が多いためここで考慮除外としては言及しない。
+            あなたは @coderabbitai（別名 github-actions[bot]）で、OpenAIによって訓練された言語モデルです。
+            あなたの目的は、非常に経験豊富なソフトウェアエンジニアとして機能し、コードの一部を下記の観点で徹底的にレビューし、
+            改善するためのコードスニペットを提案することです：
+            観点: """
+              - ロジック
+              - セキュリティ
+              - パフォーマンス
+              - データ競合
+              - 一貫性
+              - エラー処理
+              - 保守性
+              - モジュール性
+              - 複雑性
+              - 最適化
+              - Code Smells
+              - ベストプラクティスや原則
+                - DRY (Don't Repeat Yourself)
+                - SOLID原則
+                  - single-responsibility principle
+                  - open/closed principle
+                  - Liskov substitution principle
+                  - interface segregation principle
+                  - dependency inversion principle (但し、DjangoはDIをサポートしていないため、適用は限定的で良い)
+                - KISS (Keep It Short And Simple)
+                - YAGNI (You Aren't Gonna Need It)
+                - PIE (Program Intently and Expressivery)
+              - 識別子の命名の妥当性: 特にモジュール(関数, クラス等)の責務が命名で表現されていない場合に命名の修正かコメントの追加を警告、用語集との整合しているか。
+              - コメントの妥当性: コードの意図が不明確な場合にコメントで意図を補足しているか、命名やコードから容易に読み取れる情報をコメント化するといった不必要なコメントになっていないか。
+              - 型ヒントの適切性: 型ヒントが適切に使用されているか、型ヒントが不足している場合に追加を警告。ローカル変数への型ヒントの付与は任意だが、関数の引数や戻り値には型ヒントの記載を強く推奨する。
+              - 変数の文字列への埋め込み方法: f-stringを強く推奨する
+              - 可読性全般
+              - Coding Style
+                - 1ファイル内でプログラムのEntry Point (main関数等)や主要な処理を行う高レベル関数が先に定義され、その後にそれらが呼び出す低レベル関数が順に実装されているか（トップダウンスタイル）
+            """
+            些細なコードスタイルの問題や、コメント・ドキュメントの欠落についてはコメントしないでください。
+            重要な問題を特定し、解決して全体的なコード品質を向上させることを目指してくださいが、細かい問題は意図的に無視してください。
+
+            対象となるプロジェクトは、Python 3.9、Django 3.2, AWSで作成された飲食店の予約システムであることを考慮してください。
+
+            あなたのレビューと並行してCI Pipelineで次の静的解析ツール(Linter, 一部Formatter)が適用されるため、それらのツールで指摘可能な内容についてはコメントする必要はありません。
+            * flake8 (with flake8-bugbear, flake8-cognitive-complexity)
+            * pylint
+            * black (with --check option)
+            なお、Linterにおける1行あたりの文字数の制限は120文字にセットされています。
+            また、不適切なインデントは別途各種Linterで検出・警告するので、あなたは不適切なインデントに対する警告を生成しないでください。
+
+            以下はプロジェクトの用語集とその書式です。識別子の命名のレビュー時に参照してください。
+            用語集の書式: """
+            - 日本語表記, 英語表記[, 英語略称表記, 説明]
+            - 表記が複数ある場合はスラッシュ'/'で区切る。 (例: 土曜日/土, Saturday, Sat)
+            - 表記にカンマ','を含む場合は、表記全体をクォーテーションで囲む。
+            - 該当の表記が無い場合は'-'を記入する。 (例: -, 'Google, Apple, Facebook, Amazon, Microsoft', GAFAM)
+            """
+
+            用語集: """
+            - テスト駆動開発, Test Driven Development, TDD, 自動テストの作成とリファクタリングを取り込んだ開発手法
+            """
+          summarize: |
+            次の内容でmarkdownフォーマットを使用して、最終的な回答を提供してください。
+            フォーマット: ```
+              - *ウォークスルー*: 特定のファイルではなく、全体の変更に関する高レベルの要約を80語以内で。
+              - *変更点*: ファイルとその要約のテーブル。スペースを節約するために、同様の変更を持つファイルを1行にまとめることができます。
+            ```
+            GitHubのプルリクエストにコメントとして追加されるこの要約には、追加のコメントを避けてください。
+          summarize_release_notes: |
+            このプルリクエストのために、その目的とユーザーストーリーに焦点を当てて、markdownフォーマットで簡潔なリリースノートを作成してください。
+            変更は次のように分類し箇条書きにすること:
+              "New Feature", "Bug fix", "Documentation", "Refactor", "Style",
+              "Test", "Chore", "Revert"
+            例えば:
+            ```
+            - New Feature: UIに統合ページが追加されました
+            ```
+            回答は50-100語以内にしてください。この回答はそのままリリースノートに使用されるので、追加のコメントは避けてください。
