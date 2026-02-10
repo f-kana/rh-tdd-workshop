@@ -31,6 +31,8 @@ def parse_printing_page(pages: str) -> List[int]:
                 raise ValueError("Invalid format.")
             ret.extend([i for i in range(from_page, to_page + 1)])
         else:
+            if int(csp) == 0:
+                raise ValueError("Invalid format.")
             ret.append(int(csp))
 
     ret = sorted(list(set(ret)))

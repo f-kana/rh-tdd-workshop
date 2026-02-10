@@ -42,13 +42,6 @@ class PrintingPageParserTests(TestCase):
                 self.assertListEqual(parse_printing_page("0.1-2.1"), None)
                 self.assertListEqual(parse_printing_page("0.1,2.1"), None)
 
-        # with self.subTest("xxx"):
-        #     self.assertListEqual(parse_printing_page(None), None)
-        # with self.subTest("xxx"):
-        #     self.assertListEqual(parse_printing_page(None), None)
-        # with self.subTest("xxx"):
-        #     self.assertListEqual(parse_printing_page(None), None)
-
     def test_validate_invalid_char(self):
         with self.subTest("8.受入可能文字（数値またはハイフンまたはカンマまたは半角スペース「0123456789,- 」)以外の場合、例外をスローする。"):
             with self.assertRaises(ValueError):
